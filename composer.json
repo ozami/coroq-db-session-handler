@@ -1,0 +1,27 @@
+{
+    "name": "coroq/db-session-handler",
+    "description": "Session handler that saves data into RDBMS via coroq/db",
+    "type": "library",
+    "require": {
+        "php": ">=5.4",
+        "coroq/db": "^0.3"
+    },
+    "scripts": {
+        "phan": "@php -n -d extension=ast.so -d extension=json.so -d extension=tokenizer.so vendor/bin/phan --no-progress-bar || :"
+    },
+    "autoload": {
+        "psr-4": {
+            "Coroq\\": "src/"
+        }
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ozawa Masayuki",
+            "email": "ozawa@coroq.com"
+        }
+    ],
+    "require-dev": {
+        "phan/phan": "^3.0"
+    }
+}
