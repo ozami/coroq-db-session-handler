@@ -3,8 +3,8 @@
     "description": "Session handler that saves data into RDBMS via coroq/db",
     "type": "library",
     "require": {
-        "php": ">=5.4",
-        "coroq/db": "^0.3"
+        "php": ">=7.2",
+        "coroq/db": "^0.4"
     },
     "scripts": {
         "phan": "@php -n -d extension=ast.so -d extension=json.so -d extension=tokenizer.so vendor/bin/phan --no-progress-bar || :"
@@ -22,6 +22,6 @@
         }
     ],
     "require-dev": {
-        "phan/phan": "^3.0"
+        "phan/phan": "^5.4"
     }
 }

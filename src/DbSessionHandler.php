@@ -30,7 +30,7 @@ class DbSessionHandler implements \SessionHandlerInterface {
    * @param string $table_name
    * @param array $options getCurrentTime => callable, per_session_cleanup_rate => float
    */
-  public function __construct($db, $table_name, array $options = []) {
+  public function __construct(Db $db, string $table_name, array $options = []) {
     if (preg_match("#[^a-zA-Z0-9_]#", $table_name)) {
       throw new \DomainException("Invalid \$table_name.");
     }
@@ -51,9 +51,9 @@ class DbSessionHandler implements \SessionHandlerInterface {
    * Do nothing in this implementation.
    * @param string $save_path not used.
    * @param string $session_name not used.
-   * @return true
+   * @return bool
    */
-  public function open($save_path, $session_name) {
+  public function open($save_path, $session_name): bool {
     return true;
   }
 
@@ -64,7 +64,7 @@ class DbSessionHandler implements \SessionHandlerInterface {
    * @return string An encoded string of the read data. If nothing was read, it must return an empty string.
    * @throws Error
    */
-  public function read($session_id) {
+  public function read($session_id): string {
     try {
       $encoded_session_data = $this->db->select([
         "table" => $this->table_name,
@@ -96,10 +96,10 @@ class DbSessionHandler implements \SessionHandlerInterface {
    *
    * @param string $session_id
    * @param string $session_data 
-   * @return true
+   * @return bool
    * @throws Error
    */
-  public function write($session_id, $session_data) {
+  public function write($session_id, $session_data): bool {
     try {
       $now = call_user_func($this->getCurrentTime);
       // lazy write
@@ -130,7 +130,7 @@ class DbSessionHandler implements \SessionHandlerInterface {
    * @param int $time_created
    * @param string $session_id
    */
-  private function deletePreviousData($time_created, $session_id) {
+  private function deletePreviousData($time_created, $session_id): void {
     if ($this->per_session_cleanup_rate < mt_rand(1, 100) / 100) {
       return;
     }
@@ -153,9 +153,9 @@ class DbSessionHandler implements \SessionHandlerInterface {
    * Close the session
    *
    * Do nothing in this implementation.
-   * @return true
+   * @return bool
    */
-  public function close() {
+  public function close(): bool {
     return true;
   }
 
@@ -163,10 +163,10 @@ class DbSessionHandler implements \SessionHandlerInterface {
    * Destroy a session
    *
    * @param string $session_id
-   * @return true
+   * @return bool
    * @throws Error
    */
-  public function destroy($session_id) {
+  public function destroy($session_id): bool {
     try {
       $this->db->delete([
         "table" => $this->table_name,
@@ -186,10 +186,10 @@ class DbSessionHandler implements \SessionHandlerInterface {
    * Cleanup old sessions
    *
    * @param int $maxlifetime
-   * @return true
+   * @return bool
    * @throws Error
    */
-  public function gc($maxlifetime) {
+  public function gc($maxlifetime): bool {
     try {
       $expiration_time = call_user_func($this->getCurrentTime) - $maxlifetime;
       $this->db->delete([
